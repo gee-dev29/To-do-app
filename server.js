@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt")
 const mongoose = require("mongoose")
 require("dotenv").config()
 const {success, error}  = require("consola");
+const myRoute = require("./route/route")
 
 //initialize express
 const app = express()
@@ -19,6 +20,9 @@ mongoose.connect(process.env.DATADASE, {useNewUrlParser: true})
     .then((result) => success({message: 'Database connected successfully.', badge: true}))
     .catch((err) => error({message: "Database connection failed." , badge: true}))
 
+    //
+    app.use(myRoute)
+    
 // listen to a server
 app.listen(process.env.PORT, () =>{
     success({message: `listening to a server on port =  ${process.env.PORT}`, badge: true})
