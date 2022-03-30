@@ -20,4 +20,4 @@ const TodoLitSchema = new mongoose.Schema({
  
 })
 
-module.exports = mongoose.Model("todo", TodoLitSchema)
+module.exports = mongoose.model("todo", TodoLitSchema) 

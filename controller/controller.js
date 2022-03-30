@@ -2,13 +2,13 @@ const User = require("../model/user")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const TodoList = require("../model/todoList")
-const { findOneAndRemove } = require("../model/user")
 
 module.exports.addToList = async function (req, res){
 
 try{
-        const getUser = await findOne({email: req.body.email})
+        const getUser = await User.findOne({email: req.body.email})
         const addItem = new TodoList ({
+            email: req.body.email,
             item: req.body.item,
             price: req.body.price,
             quantity: req.body.quantity
@@ -25,29 +25,24 @@ try{
 //get list of itemize schedule
 module.exports.getAllItems = async function (req, res){
     try {
-        const getUser = await findOne({email: req.body.email})
-        const addItem = new TodoList ({
-            item: req.body.item,
-            price: req.body.price,
-            quantity: req.body.quantity
-        })
+        const getUser = await TodoList.find({email: req.body.email})
         if(getUser){
-            await addItem.save()
-        }
+            res.json(getUser)
+            }
     } catch (error) {
         res.send(error)
     }
 }
 module.exports.deleteItem = async function (req, res){
     try {
-        const getUser = await findOne({email: req.body.email})
+        const getUser = await TodoList.find({email: req.body.email})
         const addItem = new TodoList ({
             item: req.body.item,
             price: req.body.price,
             quantity: req.body.quantity
         })
         if(getUser){
-            await TodoList.findOneAndRemove(getUser.id, (err,data) =>{
+            await TodoList.findOneAndRemove(addItem, (err,data) =>{
             if(err){
                 console.log("List not found");
             }else{
@@ -100,24 +95,4 @@ module.exports.login = async function (req, res) {
         res.send(error)
     }
 }
-module.exports.update = async  function (req, res) {
-    
-        try {
-            const salt = await bcrypt.genSalt(10);
-    
-            const user =  await User.findOne({email: req.body.email})
-            if (user){       
-                await User.findByIdAndUpdate(user.id, (err, data) =>{
-                if(err) {
-                    console.log(err)
-                }
-                return res.send(data);
-                console.log("Data updated successfully.");
-            });
-            };
-            return console.log(error)
-        }catch (error) {
-            console.log("Can't update user")
-        }
-    
-}
+

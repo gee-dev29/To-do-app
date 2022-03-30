@@ -1,12 +1,14 @@
 const express = require("express")
 const useCcontroller = require("../controller/controller")
-
+const validateToken = require("../middleware/jwt")
 
 const router = express.Router()
 // register route
 router.post("/register", useCcontroller.register)
 //login route
-router.post("/login",validateToken, useCcontroller.login)
+router.get("/login",validateToken, useCcontroller.login)
 router.post("/addToList",validateToken, useCcontroller.addToList)
 router.post("/deleteItem",validateToken, useCcontroller.deleteItem)
-router.post("/getItem",validateToken, useCcontroller.getAllItems)
+router.get("/getItem",validateToken, useCcontroller.getAllItems) 
+
+module.exports = router; 
