@@ -90,7 +90,7 @@ module.exports.login = async function (req, res) {
                 const token = await jwt.sign({loginUser}, process.env.SECRET_KEY)
                 res.status(200).send({email: req.body.email, token})
             }
-        }return res.status(403).send("invalid token")
+        }return res.status(403).send("User doesn't exist.")
     } catch (error) {
         res.status(401).send(error)
     }
