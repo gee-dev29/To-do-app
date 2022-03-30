@@ -87,8 +87,14 @@ module.exports.login = async function (req, res) {
             const validateData = await bcrypt.compare(req.body.password, loginUser.password)
             if(validateData){
                 // create and asign token
-                const token = await jwt.sign({loginUser}, process.env.SECRET_KEY)
-                res.status(200).send({email: req.body.email, token})
+                await jwt.sign({loginUser}, process.env.SECRET_KEY, (err, data) =>{
+                    if(err){
+                        res.status(400).send("invalid token.")
+                    }else{
+                        res.status(200).send({message: "User logged in", email: req.body.email, data})
+
+                    }
+                })
             }
         }return res.status(403).send("User doesn't exist.")
     } catch (error) {
