@@ -88,11 +88,11 @@ module.exports.login = async function (req, res) {
             if(validateData){
                 // create and asign token
                 const token = await jwt.sign({loginUser}, process.env.SECRET_KEY)
-                res.json({email: req.body.email, token})
+                res.status(200).send({email: req.body.email, token})
             }
         }return res.status(403).send("invalid token")
     } catch (error) {
-        res.send(error)
+        res.status(401).send(error)
     }
 }
 
