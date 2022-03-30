@@ -3,7 +3,7 @@ const jwt  = require("jsonwebtoken");
 
 const validateToken = async function (req, res, next){
     try {
-        const authHeader = req.headers["Bearer Token"];
+        const authHeader = req.headers.authorization;
 
         if(authHeader){
             const token = authHeader.split(" ")[1]
@@ -17,7 +17,7 @@ const validateToken = async function (req, res, next){
                 });
 
         }else{
-            console.log("token doesn't exist");
+            res.send("token doesn't exist");
         }
     } catch (error) {
         console.log(error);

@@ -2,7 +2,52 @@ const User = require("../model/user")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const TodoList = require("../model/todoList")
+const todoList = require("../model/todoList")
 
+// registration logic
+module.exports.register = async function (req, res){
+    try {
+        // hash password
+        const salt = await bcrypt.genSalt(15)
+        const hashPassword = await bcrypt.hash(req.body.password, salt)
+
+        // collect the user data
+        const userData = new User({
+            email: req.body.email,
+            password: hashPassword
+        })
+        // find a user
+        const savedUser  = await User.findOne({email: req.body.password})
+        if(savedUser){
+            res.status(400).send("User already existed.")
+        }else{
+            await userData.save()
+            res.status(200).send("User created successfully.")
+        }
+    } catch (error) {
+        res.send(error)
+    }
+}
+// log in
+module.exports.login = async function (req, res) {
+    try {
+        const salt = await bcrypt.genSalt(15);
+        const hashPassword = await bcrypt.hash(req.body.password, salt);
+        //find the user
+        const loginUser = await User.findOne({email: req.body.email});
+        if(loginUser){
+            const validateData = await bcrypt.compare(req.body.password, loginUser.password);
+            if(validateData){
+                // create and asign token
+                const token=  jwt.sign({loginUser}, process.env.SECRET_KEY);
+                res.send(token);
+            }
+        }return res.status(403).send("User doesn't exist.");
+    } catch (error) {
+        res.status(401).send(error);
+    }
+}
+//add to list
 module.exports.addToList = async function (req, res){
 
 try{
@@ -33,6 +78,7 @@ module.exports.getAllItems = async function (req, res){
         res.send(error)
     }
 }
+// delete a single item
 module.exports.deleteItem = async function (req, res){
     try {
         const getUser = await TodoList.find({email: req.body.email})
@@ -54,51 +100,26 @@ module.exports.deleteItem = async function (req, res){
         res.send(error)
     }
 }
-
-module.exports.register = async function (req, res){
+//delete all item
+module.exports.deleteDocument = async function (req, res ){
     try {
-        // hash password
-        const salt = await bcrypt.genSalt(15)
-        const hashPassword = await bcrypt.hash(req.body.password, salt)
-
-        // collect the user data
-        const userData = new User({
-            email: req.body.email,
-            password: hashPassword
-        })
-        // find a user
-        const savedUser  = await User.findOne({email: req.body.password})
-        if(savedUser){
-            res.status(400).send("User already existed.")
-        }else{
-            await userData.save()
-            res.status(200).send("User created successfully.")
+        const findUser = await User.findOne({email: req.body.email})
+        if(findUser){
+            await TodoList.find({_id: findUser.id}, (err, document) =>{
+                if(err){
+                    res.status(400).send("No document found.")
+                }else{
+                    TodoList.deleteMany();
+                    res.status(200).send("All documents deleted.")
+                }
+            })
         }
     } catch (error) {
-        res.send(error)
+        res.status(400).send("User not found.")
     }
 }
-module.exports.login = async function (req, res) {
-    try {
-      
-        //find the user
-        const loginUser = await User.findOne({email: req.body.email})
-        if(loginUser){
-            const validateData = await bcrypt.compare(req.body.password, loginUser.password)
-            if(validateData){
-                // create and asign token
-                await jwt.sign({loginUser}, process.env.SECRET_KEY, (err, data) =>{
-                    if(err){
-                        res.status(400).send("invalid token.")
-                    }else{
-                        res.status(200).send({message: "User logged in", email: req.body.email, data})
 
-                    }
-                })
-            }
-        }return res.status(403).send("User doesn't exist.")
-    } catch (error) {
-        res.status(401).send(error)
-    }
-}
+
+
+
 

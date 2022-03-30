@@ -1,14 +1,19 @@
 const express = require("express")
-const useCcontroller = require("../controller/controller")
+const useController = require("../controller/controller")
 const validateToken = require("../middleware/jwt")
 
 const router = express.Router()
 // register route
-router.post("/register", useCcontroller.register)
+router.post("/register", useController.register)
 //login route
-router.get("/login", useCcontroller.login)
-router.post("/addToList",validateToken, useCcontroller.addToList)
-router.post("/deleteItem",validateToken, useCcontroller.deleteItem)
-router.get("/getItem",validateToken, useCcontroller.getAllItems) 
+router.post("/login", useController.login)
+//add to Lits
+router.post("/addToList",validateToken, useController.addToList)
+// delete a single item
+router.post("/deleteItem",validateToken, useController.deleteItem)
+//delete all document
+router.post("/deleteDocument",validateToken, useController.deleteDocument)
+// get items
+router.get("/getItem",validateToken, useController.getAllItems) 
 
 module.exports = router; 
