@@ -16,7 +16,7 @@ app.use(bodyparser.urlencoded({extended: false}))
 app.use(bodyparser.json())
 
 // connect to a database
-mongoose.connect(process.env.DATABASE, {useNewUrlParser: true})
+mongoose.connect("mongodb+srv://Godwin:geedev29@cluster0.wsaug.mongodb.net/To-do?retryWrites=true&w=majority", {useNewUrlParser: true})
     .then((result) => success({message: 'Database connected successfully.', badge: true}))
     .catch((err) => error({message: "Database connection failed." , badge: true}))
 

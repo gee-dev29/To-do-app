@@ -64,7 +64,7 @@ module.exports.register = async function (req, res){
         // collect the user data
         const userData = new User({
             email: req.body.email,
-            password: req.body.password
+            password: hashPassword
         })
         // find a user
         const savedUser  = await User.findOne({email: req.body.password})
