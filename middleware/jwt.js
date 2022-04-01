@@ -9,9 +9,9 @@ const validateToken = async function (req, res, next){
             const token = authHeader.split(" ")[1]
                 await jwt.verify(token, process.env.SECRET_KEY, (err, data)=>{
                     if(err){
-                        console.log("Invalid token.");
+                        res.send("Invalid token ,Login required.");
                     }else{ 
-                        res.send(data);
+                        // res.send(data);
                         next();
                     }
                 });

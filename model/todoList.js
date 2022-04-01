@@ -16,8 +16,11 @@ const TodoLitSchema = new mongoose.Schema({
      price: {
          type: String,
          required: true
-        }
- 
-})
+        },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
 
 module.exports = mongoose.model("todo", TodoLitSchema) 
